@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>parimal-roy | B.Pharm Portfolio</title>
+<title>Parimal Roy | B.Pharm Portfolio</title>
 <style>
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#1a0010;
-  --bg2:#210015;
-  --bg3:#2a001a;
-  --bg4:#320020;
-  --primary:#e879a0;
-  --primary-dark:#c4517a;
-  --primary-glow:rgba(232,121,160,0.18);
-  --accent:#ff6b9d;
-  --text:#f5e6ee;
-  --muted:#b88fa5;
-  --border:#4a1535;
+  --bg:#070d14;
+  --bg2:#0a1520;
+  --bg3:#0f1f2e;
+  --bg4:#132638;
+  --primary:#4fc3c3;
+  --primary-dark:#38a8a8;
+  --primary-glow:rgba(79,195,195,0.15);
+  --accent:#67e8d4;
+  --text:#e0f0f0;
+  --muted:#7ea8b0;
+  --border:#1a3545;
   --shadow:0 4px 32px rgba(0,0,0,0.7);
   --r:14px;--r-sm:9px;--t:0.3s ease;
 }
@@ -26,8 +26,10 @@ body{
   font-family:'Segoe UI',system-ui,sans-serif;
   background:var(--bg);color:var(--text);
   line-height:1.7;font-size:16px;overflow-x:hidden;
-  background-image:radial-gradient(ellipse at 20% 20%, #3d0025 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 80%, #2a0050 0%, transparent 60%);
+  background-image:
+    radial-gradient(ellipse at 15% 25%, rgba(0,80,120,0.35) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 75%, rgba(0,100,90,0.28) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(5,30,50,0.6) 0%, transparent 80%);
   min-height:100vh;
 }
 ::-webkit-scrollbar{width:4px;}
@@ -59,14 +61,14 @@ nav .container{display:flex;align-items:center;justify-content:space-between;hei
 .mobile-menu a:hover{color:var(--primary);padding-left:6px;}
 .mobile-menu a:last-child{border-bottom:none;}
 .container{max-width:1100px;margin:0 auto;padding:0 1.5rem;}
-.section-label{display:inline-block;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--primary);background:var(--primary-glow);border:1px solid rgba(232,121,160,0.25);padding:4px 14px;border-radius:999px;margin-bottom:0.75rem;}
+.section-label{display:inline-block;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--primary);background:var(--primary-glow);border:1px solid rgba(79,195,195,0.25);padding:4px 14px;border-radius:999px;margin-bottom:0.75rem;}
 .section-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:0.4rem;}
 .section-sub{color:var(--muted);margin-bottom:2.5rem;max-width:560px;}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:0.65rem 1.6rem;border-radius:var(--r-sm);font-size:0.88rem;font-weight:700;text-decoration:none;cursor:pointer;transition:all var(--t);border:2px solid transparent;}
-.btn-primary{background:var(--primary);color:#1a0010;border-color:var(--primary);}
+.btn-primary{background:var(--primary);color:#070d14;border-color:var(--primary);}
 .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 8px 24px var(--primary-glow);}
 .btn-outline{background:transparent;color:var(--primary);border-color:var(--primary);}
-.btn-outline:hover{background:var(--primary);color:#1a0010;transform:translateY(-2px);}
+.btn-outline:hover{background:var(--primary);color:#070d14;transform:translateY(-2px);}
 .btn-back{display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:0.88rem;font-weight:600;transition:all var(--t);padding:8px 0;margin-bottom:2rem;}
 .btn-back:hover{color:var(--primary);transform:translateX(-4px);}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.6s ease,transform 0.6s ease;}
@@ -107,7 +109,7 @@ section{padding:5.5rem 0;position:relative;z-index:1;}
 .edu-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;transition:all var(--t);cursor:default;}
 .edu-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 8px 24px var(--primary-glow);}
 .edu-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;}
-.edu-card-year{font-size:0.72rem;font-weight:700;color:var(--primary);background:var(--primary-glow);border:1px solid rgba(232,121,160,0.25);padding:3px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;}
+.edu-card-year{font-size:0.72rem;font-weight:700;color:var(--primary);background:var(--primary-glow);border:1px solid rgba(79,195,195,0.25);padding:3px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;}
 .edu-card h3{font-size:0.98rem;margin-bottom:2px;}
 .edu-card p{font-size:0.83rem;color:var(--muted);margin:0;}
 .gpa{font-weight:700;color:var(--primary)!important;}
@@ -115,7 +117,7 @@ section{padding:5.5rem 0;position:relative;z-index:1;}
 .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;}
 .skill-group{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;transition:all var(--t);text-decoration:none;display:block;color:var(--text);cursor:pointer;}
 .skill-group:hover{border-color:var(--primary);transform:translateY(-5px);box-shadow:0 12px 40px var(--primary-glow);}
-.skill-group-icon{width:46px;height:46px;border-radius:var(--r-sm);background:var(--primary-glow);border:1px solid rgba(232,121,160,0.25);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem;}
+.skill-group-icon{width:46px;height:46px;border-radius:var(--r-sm);background:var(--primary-glow);border:1px solid rgba(79,195,195,0.25);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1rem;}
 .skill-group h3{margin-bottom:1rem;font-size:0.95rem;}
 .skill-tags{display:flex;flex-wrap:wrap;gap:6px;}
 .skill-tag{font-size:0.73rem;font-weight:500;padding:4px 10px;border-radius:6px;background:var(--bg2);border:1px solid var(--border);color:var(--muted);}
@@ -127,7 +129,7 @@ section{padding:5.5rem 0;position:relative;z-index:1;}
 .project-cover{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:var(--bg2);border-bottom:1px solid var(--border);}
 .project-body{padding:1.3rem;flex:1;display:flex;flex-direction:column;}
 .project-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0.7rem;}
-.project-tag{font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:6px;background:var(--primary-glow);border:1px solid rgba(232,121,160,0.25);color:var(--primary);}
+.project-tag{font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:6px;background:var(--primary-glow);border:1px solid rgba(79,195,195,0.25);color:var(--primary);}
 .project-body h3{margin-bottom:0.5rem;font-size:1rem;}
 .project-body p{font-size:0.86rem;color:var(--muted);flex:1;}
 #activities{background:var(--bg);}
@@ -168,7 +170,7 @@ section{padding:5.5rem 0;position:relative;z-index:1;}
 .contact-info-items{display:flex;flex-direction:column;gap:.9rem;margin-top:1.5rem;}
 .contact-item{display:flex;align-items:center;gap:1rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:.9rem 1.1rem;text-decoration:none;color:var(--text);transition:all var(--t);}
 .contact-item:hover{border-color:var(--primary);transform:translateX(5px);box-shadow:0 4px 20px var(--primary-glow);}
-.contact-icon{width:40px;height:40px;border-radius:var(--r-sm);background:var(--primary-glow);border:1px solid rgba(232,121,160,0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.contact-icon{width:40px;height:40px;border-radius:var(--r-sm);background:var(--primary-glow);border:1px solid rgba(79,195,195,0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
 .contact-item-label{font-size:0.72rem;color:var(--muted);}
 .contact-item-value{font-size:0.88rem;font-weight:600;}
 .contact-form{display:flex;flex-direction:column;gap:1rem;}
@@ -203,7 +205,7 @@ footer span{color:var(--primary);font-weight:700;}
 <canvas id="particles-canvas"></canvas>
 <nav id="navbar">
   <div class="container">
-    <a class="nav-logo" href="index.html">parimal-roy.</a>
+    <a class="nav-logo" href="index.html">Parimal Roy</a>
     <ul class="nav-links">
       <li><a href="index.html#about">About</a></li>
       <li><a href="index.html#skills">Skills</a></li>
@@ -434,8 +436,10 @@ footer span{color:var(--primary);font-weight:700;}
     <div class="reveal-left">
       <div class="contact-info-items">
         <a class="contact-item" href="mailto:parimol238@gmail.com"><div class="contact-icon">✉️</div><div><div class="contact-item-label">Email</div><div class="contact-item-value">parimol238@gmail.com</div></div></a>
-        <a class="contact-item" href="tel:+8801774177643"><div class="contact-icon">📞</div><div><div class="contact-item-label">Phone</div><div class="contact-item-value">(+880) 01774-177643</div></div></a>
+        <a class="contact-item" href="https://wa.me/8801774177643" target="_blank"><div class="contact-icon">💬</div><div><div class="contact-item-label">WhatsApp</div><div class="contact-item-value">+880 01774-177643</div></div></a>
         <a class="contact-item" href="https://www.linkedin.com/in/parimol-ray-200ba1166" target="_blank"><div class="contact-icon">💼</div><div><div class="contact-item-label">LinkedIn</div><div class="contact-item-value">parimol-ray-200ba1166</div></div></a>
+        <a class="contact-item" href="https://www.facebook.com/parimol.roy.830042" target="_blank"><div class="contact-icon">📘</div><div><div class="contact-item-label">Facebook</div><div class="contact-item-value">parimol.roy.830042</div></div></a>
+        <a class="contact-item" href="https://www.instagram.com/parimol777?igsh=ejViaWJ0ejZ5N3Bz" target="_blank"><div class="contact-icon">📸</div><div><div class="contact-item-label">Instagram</div><div class="contact-item-value">@parimol777</div></div></a>
         <div class="contact-item" style="cursor:default;"><div class="contact-icon">📍</div><div><div class="contact-item-label">Location</div><div class="contact-item-value">Kushtia / Kurigram, Bangladesh</div></div></div>
       </div>
     </div>
@@ -476,13 +480,13 @@ allRev.forEach(el=>rObs.observe(el));
     ctx.clearRect(0,0,W,H);
     pts.forEach(p=>{
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(232,121,160,${p.o})`;ctx.fill();
+      ctx.fillStyle=`rgba(79,195,195,${p.o})`;ctx.fill();
       p.x+=p.dx;p.y+=p.dy;
       if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;
     });
     for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
       const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<120){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(232,121,160,${0.1*(1-d/120)})`;ctx.lineWidth=0.5;ctx.stroke();}
+      if(d<120){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(79,195,195,${0.1*(1-d/120)})`;ctx.lineWidth=0.5;ctx.stroke();}
     }
     requestAnimationFrame(draw);
   }
