@@ -1,0 +1,527 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary);min-height:100vh}
+.screen{display:none;padding:16px;min-height:100vh;flex-direction:column;gap:12px}
+.screen.active{display:flex}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px}
+.btn{display:block;width:100%;padding:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-size:15px;cursor:pointer;text-align:left;transition:background 0.15s}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:#1D9E75;color:#fff;border-color:#1D9E75;text-align:center}
+.btn-primary:hover{background:#0F6E56;color:#fff}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer;display:inline-block}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;font-size:12px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all 0.15s;font-weight:400}
+.tag.sel{background:#E1F5EE;border-color:#1D9E75;color:#0F6E56}
+.tag-icon{font-size:14px}
+.progress-bar{height:6px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:#1D9E75;border-radius:3px;transition:width 0.3s}
+.opt{padding:12px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;font-size:14px;color:var(--color-text-primary);background:var(--color-background-primary);transition:all 0.2s;margin-bottom:8px;display:block;width:100%;text-align:left}
+.opt:hover{background:var(--color-background-secondary)}
+.opt.correct{background:#EAF3DE;border-color:#639922;color:#3B6D11}
+.opt.wrong{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D}
+.opt.revealed{pointer-events:none}
+.timer-ring{width:48px;height:48px;position:relative;flex-shrink:0}
+.timer-ring svg{transform:rotate(-90deg)}
+.timer-ring .bg{fill:none;stroke:var(--color-background-secondary);stroke-width:4}
+.timer-ring .fg{fill:none;stroke:#1D9E75;stroke-width:4;stroke-dasharray:125.6;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke 0.3s}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500}
+.score-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:13px;background:#E1F5EE;color:#0F6E56}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;text-align:center}
+.stat-val{font-size:24px;font-weight:500;color:var(--color-text-primary)}
+.stat-lbl{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.flashcard{min-height:180px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+.fc-name{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.fc-detail{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-top:8px}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px}
+.pill-cns{background:#EEEDFE;color:#3C3489}
+.pill-cvs{background:#FCEBEB;color:#A32D2D}
+.pill-abx{background:#FAEEDA;color:#633806}
+.pill-endo{background:#EAF3DE;color:#27500A}
+.pill-gi{background:#E6F1FB;color:#0C447C}
+.fill-input{width:100%;padding:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:15px;background:var(--color-background-primary);color:var(--color-text-primary);outline:none}
+.fill-input:focus{border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,0.15)}
+.modecard{display:flex;align-items:center;gap:12px;padding:14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;transition:all 0.15s}
+.modecard:hover{background:var(--color-background-secondary)}
+.modecard.sel{border-color:#1D9E75;background:#E1F5EE}
+.mode-icon{width:36px;height:36px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.feedback-banner{padding:10px 14px;border-radius:var(--border-radius-md);font-size:13px;line-height:1.5}
+.fb-correct{background:#EAF3DE;color:#3B6D11;border:0.5px solid #639922}
+.fb-wrong{background:#FCEBEB;color:#A32D2D;border:0.5px solid #E24B4A}
+.section-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
+h2.screen-title{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+</style>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Pharmacology quiz and learning app with multiple quiz modes, flashcards, and progress tracking</h2>
+
+<div id="s-home" class="screen active">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
+    <div>
+      <p style="font-size:12px;color:var(--color-text-secondary)">Welcome back</p>
+      <h2 style="font-size:20px;font-weight:500;color:var(--color-text-primary)">PharmIQ</h2>
+    </div>
+    <div class="score-badge" id="hs-badge">Best: <strong id="hs-val">—</strong></div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#E1F5EE 0%,#9FE1CB 100%);border-color:#5DCAA5">
+    <p style="font-size:12px;color:#085041;margin-bottom:4px">Quick start</p>
+    <p style="font-size:16px;font-weight:500;color:#04342C">Test your pharmacology knowledge</p>
+    <p style="font-size:12px;color:#0F6E56;margin-top:4px">50+ questions · 7 modes · Score tracking</p>
+  </div>
+
+  <div class="section-title">quiz mode</div>
+  <div style="display:flex;flex-direction:column;gap:8px" id="mode-list">
+    <div class="modecard sel" data-mode="mcq"><div class="mode-icon" style="background:#E1F5EE">📝</div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary)">MCQ</p><p style="font-size:12px;color:var(--color-text-secondary)">4-option multiple choice</p></div></div>
+    <div class="modecard" data-mode="fill"><div class="mode-icon" style="background:#EEEDFE">✏️</div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary)">Fill in the blanks</p><p style="font-size:12px;color:var(--color-text-secondary)">Type the missing word</p></div></div>
+    <div class="modecard" data-mode="drug-use"><div class="mode-icon" style="background:#FAEEDA">💊</div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary)">Drug → Use</p><p style="font-size:12px;color:var(--color-text-secondary)">Match drug to indication</p></div></div>
+    <div class="modecard" data-mode="drug-class"><div class="mode-icon" style="background:#FCEBEB">🔬</div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary)">Drug → Class</p><p style="font-size:12px;color:var(--color-text-secondary)">Classify the drug</p></div></div>
+    <div class="modecard" data-mode="brand"><div class="mode-icon" style="background:#E6F1FB">🏷️</div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary)">Generic → Brand (BD)</p><p style="font-size:12px;color:var(--color-text-secondary)">Bangladesh brand names</p></div></div>
+    <div class="modecard" data-mode="bangla"><div class="mode-icon" style="background:#FBEAF0">🌐</div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary)">English ↔ বাংলা</p><p style="font-size:12px;color:var(--color-text-secondary)">Medical terminology</p></div></div>
+    <div class="modecard" data-mode="case"><div class="mode-icon" style="background:#EAF3DE">🩺</div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary)">Case-based</p><p style="font-size:12px;color:var(--color-text-secondary)">Clinical scenarios</p></div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:4px">category</div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px" id="cat-list">
+    <span class="tag sel" data-cat="all">🌐 All</span>
+    <span class="tag" data-cat="cns">🧠 CNS</span>
+    <span class="tag" data-cat="cvs">❤️ CVS</span>
+    <span class="tag" data-cat="antibiotics">🦠 Antibiotics</span>
+    <span class="tag" data-cat="endocrine">⚗️ Endocrine</span>
+    <span class="tag" data-cat="gi">🫃 GI</span>
+  </div>
+
+  <div class="section-title" style="margin-top:4px">difficulty</div>
+  <div style="display:flex;gap:6px" id="diff-list">
+    <span class="tag sel" data-diff="all">All</span>
+    <span class="tag" data-diff="easy">Easy</span>
+    <span class="tag" data-diff="medium">Medium</span>
+    <span class="tag" data-diff="hard">Hard</span>
+  </div>
+
+  <button class="btn btn-primary" id="start-btn" style="margin-top:4px;font-size:16px;padding:14px">Start Quiz</button>
+  <button class="btn" id="learn-btn" style="text-align:center;color:var(--color-text-secondary)">Flashcard Learning Mode</button>
+</div>
+
+<div id="s-quiz" class="screen">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <button class="btn-sm" id="q-back">← Back</button>
+    <div class="score-badge" id="q-score-disp">Score: 0</div>
+    <div class="timer-ring">
+      <svg viewBox="0 0 44 44" width="48" height="48"><circle class="bg" cx="22" cy="22" r="20"/><circle class="fg" id="timer-arc" cx="22" cy="22" r="20"/></svg>
+      <div class="timer-num" id="timer-num">10</div>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="q-progress" style="width:0%"></div></div>
+  <p style="font-size:12px;color:var(--color-text-secondary)" id="q-counter">Q 1 / 10</p>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span id="q-cat-pill" class="pill pill-gi">GI</span>
+      <span id="q-diff-pill" style="font-size:11px;color:var(--color-text-secondary)">medium</span>
+    </div>
+    <p id="q-text" style="font-size:15px;line-height:1.6;color:var(--color-text-primary)">Question text here</p>
+  </div>
+
+  <div id="q-opts"></div>
+  <div id="q-fill-area" style="display:none">
+    <input class="fill-input" id="fill-ans" placeholder="Type your answer..." autocomplete="off">
+    <button class="btn btn-primary" id="fill-submit" style="margin-top:8px">Submit</button>
+  </div>
+  <div id="q-feedback" style="display:none"></div>
+  <button class="btn btn-primary" id="q-next" style="display:none">Next →</button>
+</div>
+
+<div id="s-result" class="screen">
+  <div style="text-align:center;padding:20px 0">
+    <div style="font-size:48px" id="res-emoji">🎉</div>
+    <h2 style="font-size:22px;font-weight:500;margin-top:8px" id="res-level">Excellent!</h2>
+    <p style="font-size:14px;color:var(--color-text-secondary);margin-top:4px" id="res-sub">Keep it up!</p>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-val" id="r-score">0</div><div class="stat-lbl">Score</div></div>
+    <div class="stat-card"><div class="stat-val" id="r-pct">0%</div><div class="stat-lbl">Accuracy</div></div>
+    <div class="stat-card"><div class="stat-val" id="r-correct">0</div><div class="stat-lbl">Correct</div></div>
+    <div class="stat-card"><div class="stat-val" id="r-streak">0</div><div class="stat-lbl">Best streak</div></div>
+  </div>
+  <div class="card" id="r-breakdown" style="margin-top:4px">
+    <p class="section-title" style="margin-bottom:8px">review</p>
+    <div id="r-list"></div>
+  </div>
+  <button class="btn btn-primary" id="restart-btn">Play Again</button>
+  <button class="btn" id="home-btn" style="text-align:center;color:var(--color-text-secondary)">Back to Home</button>
+</div>
+
+<div id="s-learn" class="screen">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <button class="btn-sm" id="l-back">← Back</button>
+    <p style="font-size:13px;color:var(--color-text-secondary)" id="l-counter">1 / 20</p>
+    <button class="btn-sm" id="l-flip">Flip</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="l-progress" style="width:5%"></div></div>
+  <div class="card flashcard" id="fc-card" style="cursor:pointer;min-height:220px">
+    <div id="fc-front"><p class="fc-name" id="fc-drug">Paracetamol</p><p class="fc-detail" id="fc-brand">Brand: Napa</p></div>
+    <div id="fc-back" style="display:none">
+      <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px">CLASS · USE · MOA · SIDE EFFECTS</p>
+      <p style="font-size:14px;color:var(--color-text-primary);line-height:1.7" id="fc-details"></p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px">
+    <button class="btn" id="fc-prev" style="flex:1;text-align:center">← Prev</button>
+    <button class="btn btn-primary" id="fc-next" style="flex:1;text-align:center">Next →</button>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px" id="l-cat-list">
+    <span class="tag sel" data-lcat="all">All</span>
+    <span class="tag" data-lcat="cns">🧠 CNS</span>
+    <span class="tag" data-lcat="cvs">❤️ CVS</span>
+    <span class="tag" data-lcat="antibiotics">🦠 Antibiotics</span>
+    <span class="tag" data-lcat="endocrine">⚗️ Endocrine</span>
+    <span class="tag" data-lcat="gi">🫃 GI</span>
+  </div>
+</div>
+
+<script>
+const DRUGS=[
+  {name:"Paracetamol",brand:"Napa, Ace, Renova",cat:"gi",cls:"Analgesic/Antipyretic",use:"Fever, mild-moderate pain",moa:"Inhibits prostaglandin synthesis centrally",se:"Hepatotoxicity (overdose), rash"},
+  {name:"Omeprazole",brand:"Seclo, Losectil, Omepral",cat:"gi",cls:"Proton Pump Inhibitor (PPI)",use:"Peptic ulcer, GERD, Zollinger-Ellison",moa:"Irreversibly inhibits H+/K+-ATPase",se:"Hypomagnesemia, C. difficile, fractures"},
+  {name:"Metformin",brand:"Glucophage, Diformin, Orabet",cat:"endocrine",cls:"Biguanide (antidiabetic)",use:"Type 2 diabetes mellitus",moa:"Activates AMPK; reduces hepatic gluconeogenesis",se:"Lactic acidosis, GI upset, B12 deficiency"},
+  {name:"Amlodipine",brand:"Amdocal, Amdepin, Norvasc",cat:"cvs",cls:"Calcium Channel Blocker",use:"Hypertension, angina",moa:"Blocks L-type voltage-gated Ca2+ channels",se:"Peripheral edema, flushing, palpitations"},
+  {name:"Atenolol",brand:"Tenormin, Aten, Angiblock",cat:"cvs",cls:"Beta-1 selective blocker",use:"Hypertension, angina, post-MI",moa:"Blocks β1 adrenergic receptors",se:"Bradycardia, fatigue, cold extremities"},
+  {name:"Amoxicillin",brand:"Moxacil, Amoxyl, Fimoxyl",cat:"antibiotics",cls:"Aminopenicillin (β-lactam)",use:"RTI, UTI, otitis media, H. pylori",moa:"Inhibits bacterial cell wall synthesis",se:"Diarrhea, rash, allergic reaction"},
+  {name:"Azithromycin",brand:"Zithromax, Zimax, Azin",cat:"antibiotics",cls:"Macrolide antibiotic",use:"CAP, STI, typhoid, skin infections",moa:"Binds 50S ribosomal subunit, inhibits protein synthesis",se:"QT prolongation, hepatotoxicity, GI upset"},
+  {name:"Ciprofloxacin",brand:"Ciprocin, Cipro, Neofloxin",cat:"antibiotics",cls:"Fluoroquinolone",use:"UTI, typhoid, traveler's diarrhea",moa:"Inhibits DNA gyrase and topoisomerase IV",se:"Tendon rupture, QT prolongation, nausea"},
+  {name:"Diazepam",brand:"Sedil, Relaxil, Valium",cat:"cns",cls:"Benzodiazepine",use:"Anxiety, seizures, muscle spasm, alcohol withdrawal",moa:"Potentiates GABA-A receptor chloride conductance",se:"Sedation, dependence, respiratory depression"},
+  {name:"Phenytoin",brand:"Epanutin, Phenytoin",cat:"cns",cls:"Hydantoin anticonvulsant",use:"Tonic-clonic seizures, status epilepticus",moa:"Blocks Na+ channels in depolarised state",se:"Gingival hyperplasia, hirsutism, nystagmus"},
+  {name:"Haloperidol",brand:"Serenace, Haldol",cat:"cns",cls:"Typical antipsychotic (butyrophenone)",use:"Schizophrenia, mania, delirium",moa:"D2 dopamine receptor antagonist",se:"EPS, tardive dyskinesia, QT prolongation"},
+  {name:"Fluoxetine",brand:"Fluox, Prozac, Depex",cat:"cns",cls:"SSRI antidepressant",use:"Depression, OCD, panic disorder, bulimia",moa:"Selective serotonin reuptake inhibitor",se:"Insomnia, sexual dysfunction, serotonin syndrome"},
+  {name:"Atorvastatin",brand:"Atorlip, Lipitor, Lipicard",cat:"cvs",cls:"HMG-CoA reductase inhibitor (statin)",use:"Hyperlipidaemia, CVD prevention",moa:"Inhibits HMG-CoA reductase → reduces cholesterol synthesis",se:"Myopathy, hepatotoxicity, rhabdomyolysis"},
+  {name:"Warfarin",brand:"Warin, Coumadin",cat:"cvs",cls:"Vitamin K antagonist (oral anticoagulant)",use:"DVT, AF, prosthetic heart valves",moa:"Inhibits hepatic synthesis of factors II, VII, IX, X",se:"Bleeding, teratogenicity, skin necrosis"},
+  {name:"Furosemide",brand:"Lasix, Frusemide, Diuvar",cat:"cvs",cls:"Loop diuretic",use:"Oedema, heart failure, hypertension",moa:"Inhibits Na-K-2Cl cotransporter in thick ascending loop",se:"Hypokalaemia, ototoxicity, dehydration"},
+  {name:"Salbutamol",brand:"Ventolin, Salmol, Asthalin",cat:"gi",cls:"Short-acting β2 agonist (SABA)",use:"Acute asthma, COPD bronchospasm",moa:"Stimulates β2 receptors → bronchodilation",se:"Tremor, tachycardia, hypokalaemia"},
+  {name:"Prednisolone",brand:"Pred, Deltacortril, Oradexon",cat:"endocrine",cls:"Corticosteroid (glucocorticoid)",use:"Asthma, autoimmune disease, inflammation",moa:"Binds glucocorticoid receptor; reduces cytokine production",se:"Cushingoid features, osteoporosis, immunosuppression"},
+  {name:"Insulin (Regular)",brand:"Actrapid, Humulin R",cat:"endocrine",cls:"Short-acting insulin",use:"Type 1 & 2 DM, DKA",moa:"Binds insulin receptor; facilitates glucose uptake",se:"Hypoglycaemia, lipodystrophy, weight gain"},
+  {name:"Levothyroxine",brand:"Thyronorm, Thyrax, Eltroxin",cat:"endocrine",cls:"Thyroid hormone replacement",use:"Hypothyroidism, goitre",moa:"Replaces T4; converted peripherally to T3",se:"Palpitations, osteoporosis if overdose"},
+  {name:"Metronidazole",brand:"Flagyl, Metri, Anamet",cat:"antibiotics",cls:"Nitroimidazole antibiotic",use:"Anaerobic infections, amoebiasis, giardiasis, H. pylori",moa:"Produces free radicals damaging microbial DNA",se:"Metallic taste, peripheral neuropathy, disulfiram reaction"},
+];
+
+const QS=[
+  {t:"mcq",q:"Which pharmacokinetic process does 'first-pass metabolism' primarily affect?",opts:["Distribution","Absorption (oral bioavailability)","Renal excretion","Protein binding"],a:1,cat:"gi",diff:"medium",exp:"First-pass metabolism reduces oral bioavailability before drug reaches systemic circulation."},
+  {t:"mcq",q:"Warfarin works by inhibiting the synthesis of clotting factors. Which vitamin pathway does it block?",opts:["Vitamin C","Vitamin D","Vitamin K","Vitamin B12"],a:2,cat:"cvs",diff:"easy",exp:"Warfarin inhibits Vitamin K epoxide reductase, reducing factors II, VII, IX, X."},
+  {t:"mcq",q:"A patient takes Metformin and develops severe lactic acidosis. What is the most likely reason?",opts:["Renal failure causing drug accumulation","Hepatic first-pass effect","Drug-drug interaction with insulin","Overdose of 50mg/kg"],a:0,cat:"endocrine",diff:"hard",exp:"Metformin accumulates in renal failure → lactic acidosis. Contraindicated in CKD."},
+  {t:"mcq",q:"The drug Salbutamol acts on which type of receptor?",opts:["α1 adrenergic","β1 adrenergic","β2 adrenergic","Muscarinic M2"],a:2,cat:"gi",diff:"easy",exp:"Salbutamol is a selective β2 agonist causing bronchodilation."},
+  {t:"mcq",q:"Which antibiotic class acts by inhibiting DNA gyrase?",opts:["Macrolides","Fluoroquinolones","Beta-lactams","Aminoglycosides"],a:1,cat:"antibiotics",diff:"medium",exp:"Fluoroquinolones inhibit DNA gyrase (topoisomerase II) and topoisomerase IV."},
+  {t:"mcq",q:"What is the antidote for Paracetamol overdose?",opts:["Flumazenil","N-acetylcysteine","Naloxone","Protamine sulfate"],a:1,cat:"gi",diff:"medium",exp:"N-acetylcysteine replenishes glutathione to detoxify toxic NAPQI metabolite."},
+  {t:"mcq",q:"Which diuretic causes ototoxicity as a notable side effect?",opts:["Spironolactone","Hydrochlorothiazide","Furosemide","Acetazolamide"],a:2,cat:"cvs",diff:"medium",exp:"Furosemide (loop diuretic) can cause ototoxicity, especially at high doses."},
+  {t:"mcq",q:"Diazepam acts on which neurotransmitter system?",opts:["Dopamine","Serotonin","GABA","Glutamate"],a:2,cat:"cns",diff:"easy",exp:"Benzodiazepines potentiate GABA-A receptor, increasing Cl- conductance."},
+  {t:"mcq",q:"Which drug class is Atorvastatin?",opts:["Fibrate","Bile acid sequestrant","HMG-CoA reductase inhibitor","Niacin derivative"],a:2,cat:"cvs",diff:"easy",exp:"Atorvastatin is a statin — inhibits HMG-CoA reductase to reduce cholesterol."},
+  {t:"mcq",q:"A patient on Ciprofloxacin should be warned about which serious side effect?",opts:["Gingival hyperplasia","Tendon rupture","Pulmonary fibrosis","Agranulocytosis"],a:1,cat:"antibiotics",diff:"hard",exp:"Fluoroquinolones carry a black box warning for tendon rupture, especially the Achilles."},
+  {t:"mcq",q:"Omeprazole irreversibly inhibits which enzyme?",opts:["Carbonic anhydrase","H+/K+-ATPase","Na+/K+-ATPase","Cyclooxygenase"],a:1,cat:"gi",diff:"medium",exp:"PPIs like Omeprazole covalently bind and irreversibly inhibit the H+/K+-ATPase proton pump."},
+  {t:"mcq",q:"Which antidepressant class does Fluoxetine belong to?",opts:["SNRI","TCA","MAOI","SSRI"],a:3,cat:"cns",diff:"easy",exp:"Fluoxetine is an SSRI — selectively inhibits serotonin reuptake."},
+  {t:"mcq",q:"Phenytoin's primary mechanism of action is:",opts:["GABA potentiation","Na+ channel blockade","Ca2+ channel blockade","NMDA antagonism"],a:1,cat:"cns",diff:"medium",exp:"Phenytoin blocks voltage-gated Na+ channels in their depolarized state."},
+  {t:"mcq",q:"Which drug is used to reverse benzodiazepine overdose?",opts:["Naloxone","Flumazenil","Physostigmine","N-acetylcysteine"],a:1,cat:"cns",diff:"medium",exp:"Flumazenil is a competitive GABA-A antagonist and reverses benzodiazepine toxicity."},
+  {t:"mcq",q:"Haloperidol's antipsychotic effect is mainly due to blockade of:",opts:["5-HT2A receptors","D2 dopamine receptors","H1 histamine receptors","M1 muscarinic receptors"],a:1,cat:"cns",diff:"medium",exp:"Typical antipsychotics like Haloperidol block D2 receptors in mesolimbic pathway."},
+  {t:"mcq",q:"Which of the following best describes 'bioavailability'?",opts:["Rate of metabolism","Fraction reaching systemic circulation unchanged","Volume of distribution","Renal clearance"],a:1,cat:"gi",diff:"easy",exp:"Bioavailability = fraction of administered dose reaching systemic circulation intact."},
+  {t:"mcq",q:"Amoxicillin-Clavulanate combination is used because Clavulanate:",opts:["Increases renal excretion","Inhibits β-lactamase","Enhances bacterial uptake","Crosses blood-brain barrier"],a:1,cat:"antibiotics",diff:"medium",exp:"Clavulanate is a β-lactamase inhibitor, protecting Amoxicillin from enzymatic degradation."},
+  {t:"mcq",q:"Which calcium channel blocker is used primarily for hypertension and angina?",opts:["Verapamil","Diltiazem","Amlodipine","Nifedipine"],a:2,cat:"cvs",diff:"easy",exp:"Amlodipine (dihydropyridine CCB) is used for hypertension and stable angina."},
+  {t:"mcq",q:"Levothyroxine is a replacement for which endogenous hormone?",opts:["T3 (triiodothyronine)","T4 (thyroxine)","TSH","Cortisol"],a:1,cat:"endocrine",diff:"easy",exp:"Levothyroxine = synthetic T4; converted to active T3 in peripheral tissues."},
+  {t:"mcq",q:"The 'therapeutic window' refers to:",opts:["Time to peak drug effect","Range between minimum effective and minimum toxic dose","Duration of drug action","Speed of drug elimination"],a:1,cat:"gi",diff:"medium",exp:"Therapeutic window = concentration range where drug is effective without causing toxicity."},
+  {t:"mcq",q:"Which antibiotic should NOT be used in children under 8 years due to teeth discolouration?",opts:["Amoxicillin","Azithromycin","Doxycycline","Ciprofloxacin"],a:2,cat:"antibiotics",diff:"medium",exp:"Tetracyclines (like Doxycycline) bind calcium in developing bones/teeth causing permanent staining."},
+  {t:"mcq",q:"Metronidazole causes which reaction when taken with alcohol?",opts:["Hepatotoxicity","Disulfiram-like reaction","Steven Johnson syndrome","Serotonin syndrome"],a:1,cat:"antibiotics",diff:"medium",exp:"Metronidazole inhibits acetaldehyde dehydrogenase → disulfiram-like reaction with alcohol."},
+  {t:"mcq",q:"Which drug is first-line for Type 2 diabetes in a non-obese patient with normal renal function?",opts:["Insulin glargine","Glipizide","Metformin","Sitagliptin"],a:2,cat:"endocrine",diff:"easy",exp:"Metformin is universally first-line for T2DM due to evidence, safety, and low cost."},
+  {t:"mcq",q:"Prednisolone long-term use can cause which electrolyte disturbance?",opts:["Hyperkalaemia","Hypokalaemia","Hypernatraemia","Hyponatraemia"],a:1,cat:"endocrine",diff:"medium",exp:"Corticosteroids have mineralocorticoid effect → Na retention + K wasting → hypokalaemia."},
+  {t:"mcq",q:"Which adverse effect is associated with long-term Omeprazole use?",opts:["Hyperkalaemia","Hypomagnesaemia","Hyperglycaemia","Polycythaemia"],a:1,cat:"gi",diff:"hard",exp:"Long-term PPI use interferes with Mg2+ absorption via TRPM6 channels."},
+  {t:"drug-use",q:"What is the primary use of Furosemide?",opts:["Antibiotic","Antidiabetic","Loop diuretic for oedema/heart failure","Antihypertensive only"],a:2,cat:"cvs",diff:"easy",exp:"Furosemide is a loop diuretic used for oedema, heart failure and hypertension."},
+  {t:"drug-use",q:"Azithromycin is used to treat:",opts:["Type 2 diabetes","Community-acquired pneumonia","Hypertension","Epilepsy"],a:1,cat:"antibiotics",diff:"easy",exp:"Azithromycin covers atypical organisms in CAP."},
+  {t:"drug-use",q:"Insulin regular is primarily used for:",opts:["Hypothyroidism","Hyperlipidaemia","Diabetes mellitus and DKA","Hypertension"],a:2,cat:"endocrine",diff:"easy",exp:"Insulin is used for T1DM, T2DM insulin-requiring, and acute DKA management."},
+  {t:"drug-class",q:"Which class does Diazepam belong to?",opts:["Opioid","Benzodiazepine","Barbiturate","SSRI"],a:1,cat:"cns",diff:"easy",exp:"Diazepam is a benzodiazepine acting on GABA-A receptor."},
+  {t:"drug-class",q:"Ciprofloxacin belongs to which antibiotic class?",opts:["Macrolide","Cephalosporin","Fluoroquinolone","Aminoglycoside"],a:2,cat:"antibiotics",diff:"easy",exp:"Ciprofloxacin is a fluoroquinolone antibiotic."},
+  {t:"drug-class",q:"Furosemide is classified as a:",opts:["Thiazide diuretic","Potassium-sparing diuretic","Loop diuretic","Osmotic diuretic"],a:2,cat:"cvs",diff:"easy",exp:"Furosemide inhibits Na-K-2Cl in the loop of Henle — a loop diuretic."},
+  {t:"brand",q:"What is the Bangladesh brand name for Omeprazole?",opts:["Napa","Seclo","Lasix","Flagyl"],a:1,cat:"gi",diff:"easy",exp:"Seclo is a widely used BD brand of Omeprazole (Square Pharma)."},
+  {t:"brand",q:"'Napa' is the Bangladesh brand name for which generic drug?",opts:["Ibuprofen","Aspirin","Paracetamol","Diclofenac"],a:2,cat:"gi",diff:"easy",exp:"Napa is the most popular brand of Paracetamol in Bangladesh (Beximco Pharma)."},
+  {t:"brand",q:"Which drug is marketed as 'Ventolin' in Bangladesh?",opts:["Fluticasone","Ipratropium","Salbutamol","Theophylline"],a:2,cat:"gi",diff:"easy",exp:"Ventolin is the brand name for Salbutamol (GSK / local pharma)."},
+  {t:"brand",q:"'Flagyl' is the brand name for which antibiotic?",opts:["Ciprofloxacin","Amoxicillin","Metronidazole","Azithromycin"],a:2,cat:"antibiotics",diff:"easy",exp:"Flagyl = Metronidazole, used for anaerobic infections and protozoal diseases."},
+  {t:"brand",q:"'Lasix' is the brand name for:",opts:["Amlodipine","Atenolol","Furosemide","Spironolactone"],a:2,cat:"cvs",diff:"easy",exp:"Lasix = Furosemide, a loop diuretic by Sanofi."},
+  {t:"bangla",q:"'উচ্চ রক্তচাপ' means which medical condition in English?",opts:["Diabetes mellitus","Hypertension","Epilepsy","Heart failure"],a:1,cat:"cvs",diff:"easy",exp:"উচ্চ রক্তচাপ = high blood pressure = Hypertension."},
+  {t:"bangla",q:"What is the Bangla term for 'Antibiotic'?",opts:["ব্যথানাশক","প্রতিজৈবিক","রক্তচাপনাশক","জ্বরনাশক"],a:1,cat:"antibiotics",diff:"easy",exp:"প্রতিজৈবিক = antibiotic (anti-life referring to killing bacteria)."},
+  {t:"bangla",q:"'বহুমূত্র রোগ' refers to which condition?",opts:["Hypertension","Epilepsy","Diabetes mellitus","Thyroid disorder"],a:2,cat:"endocrine",diff:"easy",exp:"বহুমূত্র = frequent urination — colloquial Bangla for Diabetes mellitus."},
+  {t:"bangla",q:"The Bangla term 'রক্তশূন্যতা' translates to:",opts:["Hypertension","Anaemia","Diabetes","Pneumonia"],a:1,cat:"gi",diff:"easy",exp:"রক্তশূন্যতা = blood emptiness = Anaemia."},
+  {t:"case",q:"A 55-year-old man with T2DM and eGFR 25 mL/min is admitted. Which antidiabetic drug should be STOPPED immediately?",opts:["Insulin glargine","Metformin","Glipizide","Sitagliptin"],a:1,cat:"endocrine",diff:"hard",exp:"Metformin is contraindicated in severe CKD (eGFR <30) due to risk of lactic acidosis."},
+  {t:"case",q:"A 40-year-old asthmatic on Atenolol presents with worsening bronchospasm. What is the most likely cause?",opts:["Allergic reaction","Beta-blocker induced bronchospasm","Antibiotic side effect","Calcium channel toxicity"],a:1,cat:"cvs",diff:"hard",exp:"Atenolol, despite β1 selectivity, can cause bronchospasm in asthmatics. Contraindicated."},
+  {t:"case",q:"A patient presents with peptic ulcer and tests positive for H. pylori. What is a first-line eradication regimen component?",opts:["Metronidazole only","Triple therapy: PPI + Amoxicillin + Clarithromycin","Salbutamol + Prednisolone","Furosemide + Warfarin"],a:1,cat:"gi",diff:"medium",exp:"Standard H. pylori eradication: PPI + Amoxicillin + Clarithromycin (triple therapy) for 7-14 days."},
+  {t:"case",q:"A 30-year-old woman in status epilepticus arrives in the ER. What is the FIRST-LINE IV drug?",opts:["Phenytoin IV","Levetiracetam","Diazepam IV (lorazepam if available)","Phenobarbitone"],a:2,cat:"cns",diff:"hard",exp:"IV benzodiazepines (lorazepam/diazepam) are first-line for status epilepticus."},
+  {t:"case",q:"A patient on long-term Warfarin has INR of 8.2 (target 2-3) with minor bleeding. What is the immediate management?",opts:["Increase Warfarin dose","Stop Warfarin; give Vitamin K","Start Heparin","Observe only"],a:1,cat:"cvs",diff:"hard",exp:"Supratherapeutic INR with bleeding: stop Warfarin, give Vitamin K (and FFP if major bleed)."},
+  {t:"mcq",q:"Which drug interaction occurs when Ciprofloxacin is given with antacids?",opts:["Increased Ciprofloxacin absorption","Decreased Ciprofloxacin absorption due to chelation","No interaction","Additive toxicity"],a:1,cat:"antibiotics",diff:"hard",exp:"Antacids containing Al/Mg chelate fluoroquinolones, reducing GI absorption by up to 90%."},
+  {t:"mcq",q:"Half-life (t½) of a drug is the time taken for:",opts:["Drug to reach maximum concentration","Drug to be completely eliminated","Plasma concentration to fall by 50%","Drug to start exerting its effect"],a:2,cat:"gi",diff:"easy",exp:"t½ = time for plasma concentration to decrease by 50%; determines dosing interval."},
+  {t:"mcq",q:"Which of the following is an adverse effect of Fluoxetine?",opts:["Weight gain and sedation","Sexual dysfunction and insomnia","QT prolongation and arrhythmia","Tendon rupture"],a:1,cat:"cns",diff:"medium",exp:"SSRIs commonly cause sexual dysfunction, insomnia, and GI disturbance."},
+  {t:"mcq",q:"Rhabdomyolysis is a serious adverse effect of which drug class?",opts:["Beta blockers","Statins","ACE inhibitors","ARBs"],a:1,cat:"cvs",diff:"medium",exp:"Statins can cause myopathy progressing to rhabdomyolysis, especially with CYP3A4 inhibitors."},
+  {t:"mcq",q:"Which is the most renally excreted drug that requires dose reduction in CKD?",opts:["Atorvastatin","Diazepam","Gentamicin","Prednisolone"],a:2,cat:"antibiotics",diff:"hard",exp:"Gentamicin is ~100% renally excreted; highly nephrotoxic and ototoxic — requires dose adjustment."},
+];
+
+const FILL=[
+  {q:"Paracetamol is mainly used to reduce ______.",answers:["fever","pain","pyrexia","temperature"],cat:"gi",diff:"easy",exp:"Paracetamol is an antipyretic and analgesic — primarily reduces fever and pain."},
+  {q:"Omeprazole belongs to the drug class called Proton Pump ______.",answers:["inhibitors","inhibitor"],cat:"gi",diff:"easy",exp:"PPIs irreversibly block the proton pump (H+/K+-ATPase)."},
+  {q:"Metformin is the first-line drug for Type ______ Diabetes.",answers:["2","two","ii"],cat:"endocrine",diff:"easy",exp:"Metformin is universally recommended as first-line for T2DM."},
+  {q:"Furosemide is a ______ diuretic.",answers:["loop","loop diuretic"],cat:"cvs",diff:"easy",exp:"Furosemide inhibits Na-K-2Cl in the thick ascending loop of Henle."},
+  {q:"The antidote for Paracetamol overdose is N-acetyl______.",answers:["cysteine","n-acetylcysteine"],cat:"gi",diff:"medium",exp:"NAC replenishes glutathione stores to detoxify NAPQI."},
+  {q:"Diazepam enhances the effect of the neurotransmitter ______.",answers:["gaba","gamma-aminobutyric acid"],cat:"cns",diff:"medium",exp:"Benzodiazepines potentiate GABA at GABA-A receptors."},
+  {q:"Salbutamol is a ______ agonist used in asthma.",answers:["β2","beta2","beta-2","b2"],cat:"gi",diff:"medium",exp:"Salbutamol selectively stimulates β2 receptors → bronchodilation."},
+  {q:"Warfarin inhibits the synthesis of clotting factors dependent on Vitamin ______.",answers:["k","vitamin k"],cat:"cvs",diff:"easy",exp:"Warfarin blocks Vitamin K epoxide reductase."},
+];
+
+let selMode="mcq",selCat="all",selDiff="all",selLCat="all";
+let qPool=[],qIdx=0,score=0,correct=0,streak=0,bestStreak=0,timer=null,timeLeft=10,fcIdx=0,fcFlipped=false,fcPool=[],answered=false;
+
+const $ = id => document.getElementById(id);
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+function loadHighScore(){
+  const hs = localStorage.getItem('pharmiq_hs') || '—';
+  $('hs-val').textContent = hs;
+}
+
+document.querySelectorAll('#mode-list .modecard').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('#mode-list .modecard').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
+    selMode = c.dataset.mode;
+  });
+});
+
+document.querySelectorAll('#cat-list .tag').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('#cat-list .tag').forEach(x=>x.classList.remove('sel'));
+    t.classList.add('sel');
+    selCat = t.dataset.cat;
+  });
+});
+
+document.querySelectorAll('#diff-list .tag').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('#diff-list .tag').forEach(x=>x.classList.remove('sel'));
+    t.classList.add('sel');
+    selDiff = t.dataset.diff;
+  });
+});
+
+function buildPool(){
+  let base=[];
+  if(selMode==='fill') base=[...FILL];
+  else {
+    const modeQ = QS.filter(q=>selMode==='mcq'?['mcq','drug-use','drug-class','brand','bangla','case'].includes(q.t):q.t===selMode);
+    base = modeQ.length>0?modeQ:QS;
+  }
+  if(selCat!=='all') base=base.filter(q=>q.cat===selCat);
+  if(selDiff!=='all') base=base.filter(q=>q.diff===selDiff);
+  if(base.length<4) base=selMode==='fill'?[...FILL]:[...QS];
+  return shuffle(base).slice(0,10);
+}
+
+function shuffle(arr){return [...arr].sort(()=>Math.random()-0.5)}
+
+function startQuiz(){
+  qPool=buildPool();
+  qIdx=0;score=0;correct=0;streak=0;bestStreak=0;answered=false;
+  show('s-quiz');
+  renderQ();
+}
+
+function renderQ(){
+  if(qIdx>=qPool.length){endQuiz();return;}
+  const q=qPool[qIdx];
+  answered=false;
+  $('q-progress').style.width=Math.round(qIdx/qPool.length*100)+'%';
+  $('q-counter').textContent='Q '+(qIdx+1)+' / '+qPool.length;
+  $('q-score-disp').textContent='Score: '+score;
+  $('q-feedback').style.display='none';
+  $('q-next').style.display='none';
+  $('q-opts').innerHTML='';
+  $('q-fill-area').style.display='none';
+  const catLabels={gi:'GI',cvs:'CVS',cns:'CNS',antibiotics:'Antibiotics',endocrine:'Endocrine'};
+  const catPills={gi:'pill-gi',cvs:'pill-cvs',cns:'pill-cns',antibiotics:'pill-abx',endocrine:'pill-endo'};
+  $('q-cat-pill').textContent=catLabels[q.cat]||q.cat;
+  $('q-cat-pill').className='pill '+(catPills[q.cat]||'pill-gi');
+  $('q-diff-pill').textContent=q.diff;
+  $('q-text').textContent=q.q;
+
+  if(q.answers){
+    $('q-fill-area').style.display='block';
+    $('fill-ans').value='';
+    $('fill-ans').focus();
+  } else {
+    shuffle(q.opts.map((o,i)=>({o,i}))).forEach(({o,i})=>{
+      const b=document.createElement('button');
+      b.className='opt';
+      b.textContent=o;
+      b.addEventListener('click',()=>checkMCQ(i,b,q));
+      $('q-opts').appendChild(b);
+    });
+  }
+  startTimer(q);
+}
+
+function startTimer(q){
+  clearInterval(timer);
+  timeLeft=10;
+  updateTimerUI(10);
+  timer=setInterval(()=>{
+    timeLeft--;
+    updateTimerUI(timeLeft);
+    if(timeLeft<=0){
+      clearInterval(timer);
+      if(!answered){
+        answered=true;
+        revealCorrect(q);
+        showFeedback(false,q.exp||'Time up!','');
+        $('q-next').style.display='block';
+      }
+    }
+  },1000);
+}
+
+function updateTimerUI(t){
+  $('timer-num').textContent=t;
+  const circ=125.6;
+  const offset=circ-(circ*(t/10));
+  $('timer-arc').style.strokeDashoffset=offset;
+  $('timer-arc').style.stroke=t<=3?'#E24B4A':t<=6?'#EF9F27':'#1D9E75';
+}
+
+function checkMCQ(chosen,btn,q){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const isRight=chosen===q.a;
+  const pts=isRight?({easy:10,medium:20,hard:30}[q.diff]||10):0;
+  score+=pts;
+  if(isRight){correct++;streak++;bestStreak=Math.max(bestStreak,streak);}
+  else streak=0;
+  document.querySelectorAll('.opt').forEach(o=>{
+    if(parseInt(o.textContent)==q.opts[q.a]||o.textContent===q.opts[q.a]) o.classList.add('correct');
+    o.classList.add('revealed');
+  });
+  btn.classList.add(isRight?'correct':'wrong');
+  showFeedback(isRight,q.exp||'','');
+  $('q-next').style.display='block';
+}
+
+function revealCorrect(q){
+  document.querySelectorAll('.opt').forEach(o=>{
+    if(o.textContent===q.opts[q.a]) o.classList.add('correct');
+    o.classList.add('revealed');
+  });
+}
+
+function showFeedback(ok,exp){
+  const d=$('q-feedback');
+  d.style.display='block';
+  d.innerHTML=`<div class="feedback-banner ${ok?'fb-correct':'fb-wrong'}"><strong>${ok?'✓ Correct':'✗ Incorrect'}</strong> ${exp}</div>`;
+}
+
+$('fill-submit').addEventListener('click',()=>{
+  if(answered)return;
+  const q=qPool[qIdx];
+  const val=$('fill-ans').value.trim().toLowerCase();
+  const ok=q.answers.some(a=>val===a.toLowerCase());
+  answered=true;
+  clearInterval(timer);
+  const pts=ok?({easy:10,medium:20,hard:30}[q.diff]||10):0;
+  score+=pts;
+  if(ok){correct++;streak++;bestStreak=Math.max(bestStreak,streak);}else streak=0;
+  $('fill-input')&&($('fill-input').style.borderColor=ok?'#639922':'#E24B4A');
+  showFeedback(ok,q.exp||('Answer: '+q.answers[0]));
+  $('q-next').style.display='block';
+});
+
+$('fill-ans').addEventListener('keydown',e=>{if(e.key==='Enter')$('fill-submit').click();});
+$('q-next').addEventListener('click',()=>{qIdx++;renderQ();});
+$('q-back').addEventListener('click',()=>{clearInterval(timer);show('s-home');});
+
+function endQuiz(){
+  clearInterval(timer);
+  const pct=Math.round(correct/qPool.length*100);
+  const hs=parseInt(localStorage.getItem('pharmiq_hs'))||0;
+  if(score>hs) localStorage.setItem('pharmiq_hs',score);
+  loadHighScore();
+  $('r-score').textContent=score;
+  $('r-pct').textContent=pct+'%';
+  $('r-correct').textContent=correct+'/'+qPool.length;
+  $('r-streak').textContent=bestStreak;
+  let emoji='',lvl='',sub='';
+  if(pct>=90){emoji='🏆';lvl='Outstanding!';sub='Pharmacology genius!'}
+  else if(pct>=75){emoji='🎉';lvl='Excellent!';sub='Great performance!'}
+  else if(pct>=60){emoji='👍';lvl='Good job!';sub='Keep practicing!'}
+  else if(pct>=40){emoji='📚';lvl='Keep Learning!';sub='Review the flashcards.'}
+  else{emoji='💪';lvl='Keep going!';sub='Revisit the material.'}
+  $('res-emoji').textContent=emoji;
+  $('res-level').textContent=lvl;
+  $('res-sub').textContent=sub;
+  const list=$('r-list');
+  list.innerHTML='';
+  qPool.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.style.cssText='padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px;color:var(--color-text-secondary)';
+    div.textContent=(i+1)+'. '+q.q.substring(0,60)+'…';
+    list.appendChild(div);
+  });
+  show('s-result');
+}
+
+$('restart-btn').addEventListener('click',startQuiz);
+$('home-btn').addEventListener('click',()=>show('s-home'));
+$('start-btn').addEventListener('click',startQuiz);
+
+function buildFCPool(){
+  let pool=DRUGS;
+  if(selLCat!=='all') pool=DRUGS.filter(d=>d.cat===selLCat);
+  if(pool.length===0) pool=DRUGS;
+  return pool;
+}
+
+function renderFC(){
+  const d=fcPool[fcIdx];
+  $('l-counter').textContent=(fcIdx+1)+' / '+fcPool.length;
+  $('l-progress').style.width=Math.round((fcIdx+1)/fcPool.length*100)+'%';
+  fcFlipped=false;
+  $('fc-front').style.display='block';
+  $('fc-back').style.display='none';
+  $('fc-drug').textContent=d.name;
+  $('fc-brand').textContent='Brand: '+d.brand;
+  $('fc-details').textContent='Class: '+d.cls+'\nUse: '+d.use+'\nMOA: '+d.moa+'\nSide effects: '+d.se;
+}
+
+$('learn-btn').addEventListener('click',()=>{
+  fcPool=shuffle(buildFCPool());
+  fcIdx=0;
+  show('s-learn');
+  renderFC();
+});
+
+$('l-back').addEventListener('click',()=>show('s-home'));
+$('l-flip').addEventListener('click',()=>flipFC());
+$('fc-card').addEventListener('click',()=>flipFC());
+
+function flipFC(){
+  fcFlipped=!fcFlipped;
+  $('fc-front').style.display=fcFlipped?'none':'block';
+  $('fc-back').style.display=fcFlipped?'block':'none';
+}
+
+$('fc-next').addEventListener('click',()=>{if(fcIdx<fcPool.length-1){fcIdx++;renderFC();}});
+$('fc-prev').addEventListener('click',()=>{if(fcIdx>0){fcIdx--;renderFC();}});
+
+document.querySelectorAll('#l-cat-list .tag').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('#l-cat-list .tag').forEach(x=>x.classList.remove('sel'));
+    t.classList.add('sel');
+    selLCat=t.dataset.lcat;
+    fcPool=shuffle(buildFCPool());
+    fcIdx=0;
+    renderFC();
+  });
+});
+
+loadHighScore();
+</script>
